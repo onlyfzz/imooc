@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>散列画廊</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		h1,h2,h3,h4,h5{
+			font-weight: normal;
+		}
+		html,body{
+			width: 100%;
+			font-family: 'Avenir Next','Lantinghei SC';
+			font-size: 14px;
+			font-smoothing:antialiased;
+			-webkit-font-smoothing:antialiased;
+			-moz-font-smoothing:antialiased;
+		}
+		/*画廊容器*/
+		.wrap{
+			position: absolute;
+			width: 96%;
+			height: 600px;
+			top: 50%;
+			left: 50%;
+			margin-top: -300px;
+			margin-left: -48%;
+			-webkit-perspective: 800px;
+			-moz-perspective:800px;
+			perspective: 800px;
+			overflow: hidden;
+			background: #eee;
+			z-index: 1;
+		}
+		/*居中图片最高层*/
+		.center{
+			z-index: 999;
+		}
+		.side-front .img-center{
+			display: block;
+			width: 100%;
+			height: 85%;
+			padding: 20px;
+			box-sizing: border-box;
+		}
+		.side-front .caption{
+			font-size: 16px;
+			height: 15%;
+			line-height: 1.5em;
+		}	
+		/*负责翻转*/
+		.photo-wrap{
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			cursor: pointer;
+			-moz-transform-style: preserve-3d;
+			-webkit-transform-style: preserve-3d;
+			transform-style: preserve-3d;
+			-webkit-transition: all 1s;
+			-moz-transition: all 1s;
+			transition: all 1s;
+		}
+		/*正面*/
+		.side-front{
+			width: 100%;
+			height: 100%;
+			-webkit-transform: rotateY(0deg);
+			-moz-transform: rotateY(0deg);
+			transform: rotateY(0deg);
+			background: #fff;
+		}
+		/*背面*/
+		.side-back{
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+			padding: 20px;
+			background: #ddd;
+			text-align: left;
+			overflow: hidden;
+			-webkit-backface-visibility: hidden;
+			-moz-backface-visibility: hidden;
+			-ms-backface-visibility: hidden;
+			backface-visibility: hidden;
+			-webkit-transform: rotateY(180deg);
+			-moz-transform: rotateY(180deg);
+			transform: rotateY(180deg);
+			font: 14px/1.2 "Microsoft Yahei";
+			text-indent: 2em;
+		}
+		/*按钮导航样式*/
+		.nav{
+			position: absolute;
+			bottom: 50px;
+			width: 50%;
+			height: 30px;
+			line-height: 30px;
+			left: 25%;
+			z-index: 999;
+			text-align: center;
+			background: #fff;
+		}
+		/*所有按钮样式*/
+		.nav .i{
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			cursor: pointer;
+			text-align: center;
+			background: #aaa;
+			border-radius: 50%;
+			-webkit-transform: scale(0.48);
+			-moz-transform: scale(0.48);
+			transform: scale(0.48);
+		}
+		/*当前按钮样式*/
+		.nav .i_current{
+			transform: scale(1);
+			background: url(i/icon.png);
+			-webkit-background-size: 100%;
+			-moz-background-size: 100%;
+			background-size: 100%;
+			transition: all 0.5s;
+		}
+		/*按钮翻转特效*/
+		.nav .i_back{
+			-webkit-transform: rotateY(180deg);
+			-moz-transform: rotateY(180deg);
+			transform: rotateY(180deg);
+		}
+		/*所有图片*/
+		.photo{
+			position: absolute;
+			width: 260px;
+			height: 320px;
+			top: 50%;
+			left: 50%;
+			margin-top: -160px;
+			margin-left: -130px;
+			box-shadow: 0 0 1px rgba(0,0,0,0.01);
+			text-align: center;
+			transition: all .6s;
+		}
+		/*设置原点*/
+		.photo-wrap{
+			-webkit-transform-origin: 0% 50%;
+			-moz-transform-origin: 0% 50%;
+			transform-origin: 0% 50%;
+		}
+		/*设置翻转特效*/
+		.photo-front .photo-wrap{
+			-webkit-transform: translate(0px,0px) rotateY(0deg);
+			-moz-transform: translate(0px,0px) rotateY(0deg);
+			transform: translate(0px,0px) rotateY(0deg);
+		}
+		.photo-back .photo-wrap{
+			-webkit-transform: translate(260px,0px) rotateY(180deg);
+			-moz-transform: translate(260px,0px) rotateY(180deg);
+			transform: translate(260px,0px) rotateY(180deg);
+		}
+	</style>
+</head>
+<body>
+	<div id="wrap" class="wrap">
+		<!--photo负责平移-->
+		<div  id="photo-{{index}}" class="photo photo-front" onclick="turn(this)">
+			<!--photo-wrap负责3D旋转-->
+			<div  class="photo-wrap">
+				<div class="side-front">
+					<img class="img-center" src="i/{{img}}">
+					<h2 class="caption">{{caption}}</h2>
+				</div>
+				<div class="side-back">
+					<p>{{desc}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="js/data.js"></script>
+	<script type="text/javascript">
+		//获取元素
+		function $(selector) {
+			return selector.charAt(0)=="."?document.getElementsByClassName(selector.substr(1)):document.getElementById(selector.substr(1));
+		}
+		//翻面控制,点击的海报居中控制
+		function turn(ele) {
+			var n=ele.id.split("-")[1];
+			var cls=ele.className;
+			/*检测点击的海报有没有居中,没有则让其居中*/
+			if (!/center/.test(cls)) {
+				console.log(n);
+				return resort(n);
+			}
+			/*检测点击的图片的正反面*/
+			if (/photo-front/.test(cls)) {
+				cls=cls.replace(/photo-front/,"photo-back");
+				$("#nav_"+n).className+=" i_back";
+			}else{
+				cls=cls.replace(/photo-back/,"photo-front");
+				$("#nav_"+n).className=$("#nav_"+n).className.replace(/\s*i_back\s*/," ");
+			}
+			ele.className=cls;
+		}
+		//取一个[]范围内的随机数
+		function random(range) {
+			var max=Math.max(range[0],range[1]);
+			var min=Math.min(range[0],range[1]);
+			var diff=max-min+1;
+			return Math.floor(Math.random()*diff+min);
+		}
+		//计算左右分区的范围,range对象来存储范围
+		function range(){
+			var range={
+				left:
+					{x:[],
+					 y:[]},
+				right:
+					{x:[],
+					 y:[]}
+			};
+			//wrap的宽高
+			var wrap={
+				w:$("#wrap").clientWidth,
+				h:$("#wrap").clientHeight
+			};
+			//photo的宽高
+			var photo={
+				w:$(".photo")[0].clientWidth,
+				h:$(".photo")[0].clientHeight
+			};
+			range.left.x=[0-photo.w/2,wrap.w/2-photo.w-photo.w/2];
+			range.left.y=[0-photo.h/2,wrap.h-photo.h/2];
+			range.right.x=[wrap.w/2+photo.w/2,wrap.w-photo.w/2];
+			range.right.y=[0-photo.h/2,wrap.h-photo.h/2];
+			return range;
+		}
+		//渲染海报版面
+		function resort(n) {
+			var _photos=$(".photo");
+			var photoArr=[];
+			//清除样式,然后给#photo-n赋予一个center样式
+			for(var i=0;i<_photos.length;i++){
+				_photos[i].className=_photos[i].className.replace(/\s*center\s*/," ");
+				_photos[i].className=_photos[i].className.replace(/\s*photo-back\s*/," ");
+				_photos[i].style.left="";
+				_photos[i].style.top="";
+				_photos[i].style.transform="rotate(0deg) scale(1.2)";
+				photoArr.push(_photos[i]);
+			}
+			var photo=$("#photo-"+n);
+			photo.className+=" center";
+			photoArr.splice(n,1);
+			//把海报分为左右两个部分
+			var photos_left=photoArr.splice(0,Math.ceil(photoArr.length/2));
+			var photos_right=photoArr;
+			var ranges=range();
+			/*为没有被选中的每个photo添加位置和旋转样式*/
+			photos_left.forEach(function(item){
+				item.style.left=random(ranges.left.x)+"px";
+				item.style.top=random(ranges.left.y)+"px";
+				item.style.transform='rotate('+random([-150,150])+'deg) scale(1)';
+			});
+			photos_right.forEach(function(item){
+				item.style.left=random(ranges.right.x)+"px";
+				item.style.top=random(ranges.right.y)+"px";
+				item.style.transform='rotate('+random([-150,150])+'deg) scale(1)';
+			});
+			/*为按钮添加样式*/
+			var navs=$(".i");
+			for(var i=0;i<navs.length;i++){
+				navs[i].className=navs[i].className.replace(/\s*i_current\s*/," ");
+				navs[i].className=navs[i].className.replace(/\s*i_back\s*/," ");
+			}
+			$("#nav_"+n).className+=" i_current";
+		}
+		
+		/*添加数据*/
+		function addPhotos() {
+			var wrap=$("#wrap");
+			var old_html=wrap.innerHTML;
+			var new_html="";
+			var nav="";
+			for(var i=0;i<data.length;i++){
+				var ele=old_html
+								.replace("{{index}}",i)
+								.replace("{{img}}",data[i].img)
+								.replace("{{caption}}",data[i].caption)
+								.replace("{{desc}}",data[i].desc);
+				new_html+=ele;
+				nav+='<span id="nav_'+i+'" onclick="turn($(\'#photo-'+i+'\'))" class="i">&nbsp;</span>';
+			}
+			nav='<div class="nav">'+nav+'</div>';
+			wrap.innerHTML=new_html+nav;
+			resort(random([0,data.length-1]));
+		}
+		addPhotos();
+	</script>
+</body>
+</html>

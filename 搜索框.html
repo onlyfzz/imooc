@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>搜索框</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			background: #333;
+		}
+		.wrapper{
+			position: relative;
+			width: 1280px;
+			height: 690px;
+			margin: 0 auto;
+			background: url(i/river.jpg) no-repeat;
+		}
+		.search-container{
+			position: absolute;
+			top: 200px;
+			left: 200px;
+		}
+		.search-logo{
+			float: left;
+			margin: -4px 18px 0 0;
+		}
+		.search{
+			float: left;
+			width: 300px;
+			padding: 5px;
+			background: #fff;
+		}
+		.search-text{
+			float: left;
+			width:  270px;
+			height: 30px;
+			line-height: 30px;
+			border: none;
+			outline: none;
+		}
+		.search-submit{
+			float: left;
+			width: 30px;
+			height: 30px;
+			cursor: pointer;
+			background: url(i/search-button.png);
+			border: none;
+			outline: none;
+		}
+		.suggest{
+			display: none;
+			position: absolute;
+			width: 308px;
+			border: 1px solid #e5e5e5;
+			background: #fff;
+		}
+		.suggest ul{
+			list-style: none;
+		}
+		.suggest li{
+			padding: 5px;
+		}
+		.suggest li:hover{
+			text-decoration: underline;
+			background: #eee;
+		}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="search-container">
+			<img src="i/logo.png" class="search-logo">
+			<form class="search" id="search-form">
+				<input type="text" class="search-text" id="search-text">
+				<input type="button" class="search-submit" id="search-submit" value="">
+			</form>
+		</div>
+	</div>
+	<div class="suggest" id="suggest-div">
+		<ul id="search-suggest">
+		</ul>
+	</div>
+<script src="js/jquery.js"></script>
+<script type="text/javascript">
+	$('#search-text').keyup(function(){
+		var searchText=$('#search-text').val();
+		if (searchText) {
+			$.ajax({
+				url : 'http://s.music.163.com/search/get/',
+				type : 'POST',
+				dataType : 'jsonp',
+				jsonp : 'callback',
+				data:{
+					's': searchText,
+					'limit': 10,
+					'offset': 0,
+					'type': 1
+				},
+				success : function(data){
+					var d=data.result.songs.name;
+					var html='';
+					for(var i=0;i<d.length;i++){
+						html+='<li>'+d[i].Txt+'</li>';
+					}
+					$('#search-suggest').html(html);
+					$('#suggest-div').show().css({
+						top:$('#search-form').offset().top+$('#search-form').outerHeight(),
+						left:$('#search-form').offset().left
+					});
+				}
+			});
+		}
+	});
+	$(document).click(function(){
+		$('#suggest-div').hide();
+	});
+	$(document).delegate('li','click',function(){
+		var keyword=$(this).text();
+		location.href='http://cn.bing.com/search?q='+keyword;
+	});
+	$(document).delegate('#search-submit','click',function(){
+		var keyword=$('#search-text').val();
+		location.href='http://cn.bing.com/search?q='+keyword;
+	});
+</script>
+</body>
+</html>

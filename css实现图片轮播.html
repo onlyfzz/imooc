@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>css实现图片轮播</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+			text-decoration: none;
+		}
+		.frame{
+			width: 400px;
+			height: 500px;
+			margin: 30px auto;
+			overflow: hidden;
+			position: relative;
+		}
+		.frame .content{
+			position: absolute;
+			width: calc(400px*4);
+			height: 500px;
+			animation: anm 16s ease-in-out infinite alternate;
+		}
+		.content img{
+			float: left;
+			width: 400px;
+			height: 500px;
+		}
+		@keyframes anm{
+			0%,20%	{ left: 0; }
+			25%,45%	{ left: -100%;}
+			50%,70%	{ left: -200%;}
+			75%,100%{ left: -300%;}
+		}
+	</style>
+</head>
+<body>
+	<div class="frame">
+		<div class="content">
+			<img src="i/7无间道.jpg" id="one" alt="图片1">
+			<img src="i/2蝙蝠侠黑暗骑士.jpg" id="two" alt="图片2">
+			<img src="i/5黄海.jpg" id="thir" alt="图片3">
+			<img src="i/3后天.jpg" id="four" alt="图片4">
+		</div>
+	</div>
+</body>
+</html>

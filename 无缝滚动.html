@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>无缝滚动</title>
+	<style type="text/css">
+	*{padding: 0px; margin: 0px;list-style: none;}
+		#area{
+			margin: 0 auto;
+			margin-top: 100px;
+			width: 300px;
+			height: 150px;
+			border:1px solid #000;
+			padding-left: 20px;
+			overflow: hidden;
+		}
+		li{
+			width: 200px;
+		}
+	</style>
+</head>
+<body>
+	<div id="area">
+		<ul id="ul1">
+			<li>1.在HTML中使用JavaScript</li>
+			<li>2.基本概念</li>
+			<li>3.变量、作用域和内存问题</li>
+			<li>4.引用类型</li>
+			<li>5.面向对象的程序设计</li>
+			<li>6.函数表达式</li>
+			<li>7.BOM</li>
+			<li>8.客户端检测</li>
+			<li>9.DOM</li>
+		</ul>
+	</div>
+	<script type="text/javascript">
+		var box=document.getElementById("area");
+		var ul1=document.getElementById("ul1");
+		var ul2=document.createElement("ul");
+		ul2.innerHTML=ul1.innerHTML;
+		box.appendChild(ul2);
+		function move(){
+			if(box.scrollTop>=ul1.offsetHeight){
+				box.scrollTop=0;
+			}else{
+				area.scrollTop++;
+			}
+		}
+		var speed=50;
+		var s=setInterval(move,speed);
+		var li=document.getElementsByTagName("li");
+		for(var i=0;i<li.length;i++){
+			li[i].onmouseover=function(){
+				clearInterval(s);
+			};
+			li[i].onmouseout=function(){
+				s=setInterval(move,speed);
+			};
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>轮播图</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		html,body{
+			width: 100%;
+		}
+		.container{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			width: 800px;
+			height: 500px;
+			overflow: hidden;
+		}
+		.list{
+			position: absolute;
+			width: 5600px;
+			height: 500px;
+			z-index: 1;
+		}
+		.list img{
+			float: left;
+			width: 800px;
+			height: 500px;
+		}
+		.buttons{
+			position: absolute;
+			left: 50%;
+			bottom: 20px;
+			margin-left: -90px;
+			width: 180px;
+			text-align: center;
+			cursor: pointer;
+			z-index: 2;
+		}
+		.buttons span{
+			display: inline-block;
+			width: 20px;
+			height: 20px;
+			margin-right: 5px;
+			border-radius: 50%;
+			background: #aaa;
+			border: 1px solid #fff;
+		}
+		.buttons span:last-child{
+			margin-right: 0;
+		}
+		.buttons .on{
+			background: #000;
+		}
+		.arrow{
+			display: none;
+			position: absolute;
+			top: 230px;
+			width: 40px;
+			height: 40px;
+			background: rgba(0,0,0,0.4);
+			font-size: 40px;
+			font-weight: bold;
+			text-align: center;
+			cursor: pointer;
+			color: #fff;
+			z-index: 2;
+		}
+		.container:hover .arrow{
+			display: block;
+		}
+		#pre{
+			left: 0;
+		}
+		#next{
+			right: 0;
+		}
+	</style>
+</head>
+<body>
+<div id="container" class="container">
+	<div id="list" class="list" style="left: -800px">
+		<img src="i/8绣春刀.jpg" alt="绣春刀">
+		<img src="i/1当幸福来敲门.jpg" alt="当幸福来敲门">
+		<img src="i/2蝙蝠侠黑暗骑士.jpg" alt="蝙蝠侠黑暗骑士">
+		<img src="i/3后天.jpg" alt="后天">
+		<img src="i/7无间道.jpg" alt="无间道">
+		<img src="i/8绣春刀.jpg" alt="绣春刀">
+		<img src="i/1当幸福来敲门.jpg" alt="当幸福来敲门">
+	</div>
+	<div id="buttons" class="buttons">
+			<span index="1" class="on"></span>
+			<span index="2"></span>
+			<span index="3"></span>
+			<span index="4"></span>
+			<span index="5"></span>
+	</div>
+	<span id="pre" class="arrow">&lt;</span>
+	<span id="next" class="arrow">&gt;</span>
+</div>
+<script type="text/javascript">
+	(function shuff(){
+		function $(id) {
+			return document.getElementById(id);
+		}
+		/*index是为了确定当前图层坐标,animated是为了使运动过程中的点击失效*/
+		var list=$("list"),
+		 	pre=$("pre"),
+		 	next=$("next"),
+		 	index=1,
+		 	animated=true,
+		 	timer,
+		 	button=$("buttons"),
+		 	buttons=$("buttons").getElementsByTagName("span"),
+		 	container=$("container");
+		 /*
+		 *运动函数
+		 *time为图层转换一次的时间
+		 */
+		function animate(len) {
+			animated=false;	
+			var newLeft=parseInt(list.style.left)+len;
+			var time=300;
+			var interval=10;
+			var speed=len/(time/interval);
+			(function move(){
+				if ((speed>0&&parseInt(list.style.left)<newLeft)||(speed<0&&parseInt(list.style.left)>newLeft)) {
+					list.style.left=parseInt(list.style.left)+speed+"px";
+					setTimeout(move,interval);
+				}else{
+					list.style.left=newLeft+"px";
+					if (newLeft>-800) {
+						list.style.left=-4000+"px";
+					}
+					if (newLeft<-4000) {
+						list.style.left=-800+"px";
+					}
+					animated=true;
+				}
+			})();
+		}
+		/*按钮点击样式变化*/
+		function showButton(){
+			for(var i=0;i<buttons.length;i++){
+				buttons[i].className="";
+			}
+			buttons[index-1].className="on";
+		}
+		/*按钮点击函数*/
+		function buttonListen(){
+			if (!animated) {
+				return;
+			}
+			var spanIndex=parseInt(this.getAttribute("index"));
+			var diff=spanIndex-index;
+			animate(diff*(-800));
+			index=spanIndex;
+			showButton();
+		}
+		/*自动轮播函数*/
+		function play(){
+			timer=setInterval(function(){
+				nextListen();
+			},3000);
+		}
+		/*暂停轮播函数*/
+		function suspend(){
+			clearInterval(timer);
+		}
+		/*左箭头点击函数*/
+		function preListen(){
+			if (!animated) {
+				return;
+			}
+			if (index==1) {
+				index=5;
+			}else{
+				index--;
+			}
+			animate(800);
+			showButton();
+		}
+		/*右箭头点击函数*/
+		function nextListen(){
+			if (!animated) {
+				return;
+			}
+			if(index==5){
+				index=1;
+			}else{
+				index++;
+			}
+			animate(-800);
+			showButton();
+		}
+		function start(){
+			container.addEventListener('mouseenter',suspend,false);
+			container.addEventListener('mouseleave',play,false);
+			button.addEventListener('click',function(event){
+				if (event.target&&event.target.tagName.toLowerCase()=="span") {
+						buttonListen.call(event.target);
+				}
+			},false);
+			pre.addEventListener('click',preListen,false);
+			next.addEventListener('click',nextListen,false);
+			play();
+		}	
+		start();
+	})();
+</script>
+</body>
+</html>

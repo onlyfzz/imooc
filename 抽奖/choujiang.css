@@ -1,0 +1,24 @@
+.title{
+	width:400px;
+	height: 60px;
+	margin: 0 auto;
+	margin-top: 40px;
+	color: red;
+	text-align: center;
+	font: bold 40px/60px "黑体"; 
+}
+.bt{
+	border-radius: 5px;
+	background: blue;
+	color: white;
+	font: 22px/22px "宋体";
+	width: 100px;
+	margin-right: 10px;
+	cursor:pointer;
+}
+#bts{
+	text-align: center;
+	width: 240px;
+	margin: 0 auto;
+	margin-top: 20px;
+}

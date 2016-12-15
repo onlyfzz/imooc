@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		body{
+			background: url(i/baidu_demo.png) no-repeat top center;
+			margin: 0;
+			padding: 0;
+			font-family: "黑体";
+		}
+		a{
+			text-decoration: none;
+		}
+		.login-enter{
+			text-align: right;
+			padding: 10px 20px;
+			cursor: pointer;
+			font-size: 12px;
+		}
+		.loginPanel{
+			display: none;
+			position: absolute;
+			width: 380px;
+			border: 1px solid #eee;
+			background: #fff;
+			z-index: 999;
+		}
+		.login-head{
+			position: relative;
+			height: 50px;
+			padding: 0 20px;
+			background: #f5f5f5;
+			line-height: 50px;
+			cursor: move;
+		}
+		.close-icon{
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			width: 20px;
+			height: 20px;
+			background: url(i/close_def.png) no-repeat;
+		}
+		.login-content{
+			padding: 30px 20px;
+			text-align: right;
+		}
+		.login-content input{
+			width: 100%;
+			height: 40px;
+			border: 1px solid #eee;
+			margin-bottom: 10px;
+		}
+		.login-content button{
+			width: 100%;
+			height: 50px;
+			border: none;
+			font-size: 20px;
+			background: #3b7ae3;
+			color: #fff;
+			margin-bottom:10px;
+		}
+		.login-content a:nth-child(3){
+			display: inline-block;
+			margin-bottom: 10px;
+		}
+		.login-content a{
+			font-size: 12px;
+		}
+		.mask{
+			display: none;
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			background: #000;
+			opacity: 0.3;
+			z-index: 2;
+		}
+	</style>
+</head>
+<body>
+<div class="login-enter" id="enter">
+	<a href="#">登陆</a>
+</div>
+<div class="loginPanel" id="loginPanel">
+	<div class="login-head" id="login-head">
+		登陆通行证
+		<a href="#" class="close-icon" id="close"></a>
+	</div>
+	<div class="login-content">
+		<form>
+			<input type="" name="">
+			<input type="" name="">
+			<a href="#">忘记密码</a>
+			<button>登录</button>
+			<a href="#">立即注册</a>
+		</form>
+	</div>
+</div>
+<div class="mask" id="mask"></div>
+<script src="js/jquery.js"></script>
+<script type="text/javascript">
+	/**
+	 *login函数封装了居中,拖曳,进入,关闭4个方法
+	 *@return{object} 返回login对象
+	 */
+	function login(){
+		/**
+		 *center函数让元素在浏览器窗口中水平垂直居中
+		 *@param{string}id 传入想要居中元素的id
+		 */
+		function center(id){
+			$('#'+id).css({
+					left: ($(window).width()-$('#'+id).outerWidth())/2,
+					top: ($(window).height()-$('#'+id).outerHeight())/2
+				});
+		}
+		/**
+		 *mousedown函数实现元素的拖曳
+		 *@param{string}e e即为event对象
+		 *@param{string}id 传入被拖曳元素的id
+		 */
+		function mousedown(e,id){
+			var loginX=e.pageX-$('#'+id).offset().left;
+			var loginY=e.pageY-$('#'+id).offset().top;
+			function mousemove(e){
+				var x=e.pageX-loginX;
+				var y=e.pageY-loginY;
+				var maxX=$(window).width()-$('#'+id).outerWidth();
+				var maxY=$(window).height()-$('#'+id).outerHeight();
+				x=Math.min(maxX,Math.max(0,x));
+				y=Math.min(maxY,Math.max(0,y));
+				$('#'+id).css({
+					left: x+'px',
+					top: y+'px'
+				});
+			}
+			function mouseup(){
+				$(document).off('mousemove');
+				$(document).off('mouseup');
+			}
+			$(document).mousemove(function(e){
+				mousemove(e);
+			});
+			$(document).mouseup(function(){
+				mouseup();
+			});
+		}
+		/**
+		 *显示出登录面板和蒙层
+		 *param{string}id1 登录面板的id
+		 *param{string}id2 蒙层的id
+		 */
+		function enter(id1,id2){
+			$('#'+id1).show();
+			$('#'+id2).show();
+		}
+		/**
+		 *隐藏登录面板和蒙层
+		 *param{string}id1 登录面板的id
+		 *param{string}id2 蒙层的id
+		 */
+		function close(id1,id2){
+			$('#'+id1).hide();
+			$('#'+id2).hide();
+		}
+		var loginObj={
+			center: function(id){
+				center(id);
+			},
+			mousedown: function(e,id){
+				mousedown(e,id);
+			},
+			enter:function(id1,id2){
+				enter(id1,id2);
+			},
+			close:function(id1,id2){
+				close(id1,id2);
+			}
+		};
+		return loginObj;		
+	}
+	function start(){
+		var loginer=login();
+		loginer.center('loginPanel');
+		window.onresize=function(){
+			loginer.center('loginPanel');
+		};
+		$('#login-head').on('mousedown',function(e){
+			loginer.mousedown(e,'loginPanel');
+		});
+		$('#close').on('click',function(){
+			loginer.close('loginPanel','mask');
+		});
+		$('#enter').on('click',function(){
+			loginer.enter('loginPanel','mask');
+			loginer.center('loginPanel');
+		});
+	}
+	start();
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>淘宝搜索框</title>
+	<style type="text/css">
+		@font-face{
+			font-family: iconfont;
+			src:url(http://g.tbcdn.cn/tb/icon-font/1.1.5/iconfont.eot);
+		}
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			font: 12px/1.5 tahoma,arial,sans-serif;
+		}
+		.tb-search{
+			position: relative;
+			margin: 50px auto;
+			width: 400px;
+		}
+		.search-tips{
+			float: right;
+			padding: 5px 0 0 10px;
+			height: 45px;
+		}
+		.search-tips a{
+			font-size: 12px;
+			text-decoration: none;
+			color: #6c6c6c;
+		}
+		.search-button{
+			float: right;
+		}
+		.search-bt{
+			width: 100px;
+			height: 45px;
+			background: url(http://gtms01.alicdn.com/tps/i1/T1qyj8Fc8aXXc4E0bi-400-300.png);
+			background-position: 0 -200px;
+			border: none;
+			outline: none;
+		}
+		.search-common{
+			position: relative;
+			height: 39px;
+			padding: 3px 0 3px 77px;
+			background: #f50;
+			overflow: hidden;
+		}
+		.search-text{
+			width: 100%;
+			height: 39px;
+			line-height: 39px;
+			border: none;
+		}
+		.iconfont{
+			position: absolute;
+			top: 14px;
+			left: 80px;
+			font-size: 12px;
+			font-family: iconfont;
+		}
+		.search-list{
+			position: absolute;
+			left: 3px;
+			top: 3px;
+			width: 72px;
+			height: 37px;
+			background: #fff;
+			cursor: pointer;
+			z-index: 2;
+		}
+		.search-list ul{
+			background: #fff;
+			border: 1px solid #eee;
+		}
+		.search-list li{
+			display: none;
+			list-style: none;
+			height: 37px;
+			line-height: 37px;
+			text-align: center;
+		}
+		.search-list li:hover{
+			background: #f6f6f6;
+		}
+		.search-list a{
+			color: #6c6c6c;
+			text-decoration: none;
+			font-size: 14px;
+		}
+		.search-list .selected{
+			display: block;
+			background: #f6f6f6;
+		}
+		.background{
+			background: #f6f6f6;
+		}
+	</style>
+</head>
+<body>
+	<div class="tb-search">
+		<div class="search-list" id="search-list">
+			<ul>
+				<li id="tab-1" class="selected"><a href="#">宝贝</a></li>
+				<li id="tab-2"><a href="#">店铺</a></li>
+			</ul>
+		</div>
+		<div class="search-panel">
+			<form>
+				<div class="search-tips">
+					<a href="#">高级<br>搜索</a>
+				</div>
+				<div class="search-button">
+					<input type="submit" class="search-bt" value="">
+				</div>
+				<div class="search-common">
+					<i class="iconfont">ő</i>
+					<input type="text" class="search-text">
+				</div>
+			</form>
+		</div>
+	</div>
+	<script src="js/jquery.js"></script>
+	<script type="text/javascript">
+		$('#search-list').mouseenter(function(){
+			$('#search-list li').show()
+			.click(function() {
+				$(this).addClass('selected')
+				.siblings().removeClass('selected').hide();
+			});		
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>时光轴</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+			font-family: "Microsoft Yahei";
+		}
+		body{
+			background: url(i/1.jpg) no-repeat center 0 fixed;
+			padding-top: 41px;
+		}
+		.top{
+			position: fixed;
+			width: 100%;
+			height: 41px;
+			background: #001E3B;
+			box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+			top: 0;
+			z-index: 999;
+		}
+		.head{
+			width: 960px;
+			height: 200px;
+			margin: 0 auto;
+			background: rgba(255,255,255,.2);
+		}
+		.container{
+			width: 960px;
+			min-height: 1000px;
+			margin: 0 auto;
+			position: relative;
+		}
+		.left-sidebar{
+			position: absolute;
+			background: rgba(255,255,255,.2);
+			width: 47px;
+			top: 27px;
+			left: 0;
+			min-height: 200px;
+			z-index: 999;
+		}
+		.content{
+			padding-left: 160px;
+			padding-top: 50px;
+			min-height: 1000px;
+			background: url(i/spine.png) repeat-y 121px 0;
+			position: relative;
+		}
+		.left-sidebar a{
+			display: block;
+			height: 26px;
+			line-height: 26px;
+			text-align: right;
+			text-decoration: none;
+			font-size: 12px;
+			border-right: 2px solid #c8c8c8;
+			border-right-color: rgb(200,200,200,.5);
+			padding-right: 5px;
+			text-shadow: 0 1px 1px rgb(0,0,0,.3);
+			color: #a5a5a5;
+		}
+		.left-sidebar .current,
+		.left-sidebar a:hover{
+			color: #7ebad0;
+			border-right-color: #7ebad0;
+			font-weight: bold;
+		}
+		.left-sidebar a:hover{
+			text-decoration: underline;
+		}
+		.left-sidebar .current:hover{
+			text-decoration: none;
+		}
+		.content-time{
+			position: relative;
+			height: 30px;
+			line-height: 30px;
+			color: #a5a5a5;
+			text-shadow: 0 1px 1px rgba(0,0,0,.3);
+			font-weight: bold;
+			font-size: 14px;
+			left: -90px;
+			clear: both;
+		}
+		.content .item{
+			float: left;
+			width: 370px;
+			min-height: 300px;
+			background: #fff;
+			border-radius: 4px;
+			margin: 20px 30px 0 0;
+			position: relative;
+			color: #888;
+		}
+		.item-icon-dot{
+			position: absolute;
+			background: #fff;
+			width: 11px;
+			height: 11px;
+			border-radius: 50%;
+			left: -43px;
+			top: 25px;
+		}
+		.dot-child{
+			position: absolute;
+			background: #b3dae9;
+			width: 7px;
+			height: 7px;
+			border-radius: 50%;
+			left: 2px;
+			top: 2px;
+		}
+		.item-icon-arrow{
+			position: absolute;
+			left: -10px;
+			top: 20px;
+			height: 0;
+			border: 10px solid transparent; 
+			border-right: 10px solid #fff;
+			border-left-width: 0; 
+		}
+		.item-head{
+			padding:15px;
+			padding-bottom: 0;
+		}
+		.item-head-title{
+			height: 46px;
+			line-height: 46px;
+			font-size: 28px;
+			padding: 0 0 10px 56px;
+			position: relative;
+		}
+		.item-head-lunar{
+			position: absolute;
+			width: 46px;
+			height: 46px;
+			background: #b3dae9;
+			border-radius: 8px;
+			color: #fff;
+			left: 0;
+			top: 0;
+			font-size: 23px;
+			line-height: 23px;
+			overflow: hidden;
+		}
+		.item-head-content{
+			font-size: 14px;
+			line-height: 20px;
+			padding: 0 10px;
+			margin-bottom: 10px;
+		}
+		.ui-icon{
+			width: 15px;
+			height: 15px;
+			display: inline-block;
+			font-size: 0;
+			overflow: hidden;
+			background-image: url(i/timeline.png);
+			margin-right: 5px;
+			vertical-align: bottom;
+		}
+		.before{
+			background-position: -986px -85px;
+		}
+		.after{
+			background-position: -986px -102px;
+			margin-left: 5px;
+		}
+		.item-pic{
+			height: 287px;
+			overflow: hidden;
+		}
+		.item-pic img{
+			width: 370px;
+			height: 287px;
+		}
+		.item-foot{
+			padding: 10px 30px;
+			border-top: 1px solid #d6d6d6;
+			font-size: 12px;
+			line-height: 20px;
+			color: #b2b2b2;
+		}
+		.item-foot-info a{
+			display: inline-block;
+			text-decoration: none;
+			margin-right: 10px;
+			color: #b2b2b2;
+		}
+		.icon-agree,
+		.icon-coment{
+			display: inline-block;
+			width: 20px;
+			height: 20px;
+			vertical-align: bottom;
+			background: url(i/timeline.png);
+			background-position: -884px -21px;
+		}
+		.icon-coment{
+			background-position: -897px -42px;
+		}
+	</style>
+</head>
+<body>
+	<div class="top"></div>
+	<header class="head"></header>
+	<div class="container">
+		<div class="left-sidebar">
+			<a href="javascript:;" class="current">现在</a>
+			<a href="javascript:;" class="left-year">2014</a>
+			<a href="javascript:;" class="left-month">3月</a>
+			<a href="javascript:;" class="left-month">2月</a>
+		</div>
+		<div class="content">
+			<div class="content-time">2014</div>
+			<div class="content-time">3月</div>
+			<div class="item">
+				<div class="item-icon-dot">
+					<div class="dot-child"></div>
+				</div>
+				<div class="item-icon-arrow"></div>
+				<div class="item-head">
+					<div class="item-head-title">
+						<div class="item-head-lunar">
+						初<br>&nbsp;&nbsp;&nbsp;三
+						</div>
+						2016-11-11
+					</div>
+					<div class="item-head-content">
+						<div class="ui-icon before"></div>
+						在这春林初盛，草长莺飞的日子，QQ空间愿你关掉电脑，放下手机，与三五好友相约青山绿水中，感受春天带来的勃勃生机···<div class="ui-icon after"></div>
+					</div>
+				</div>
+				<div class="item-pic">
+					<img src="i/8绣春刀.jpg">
+				</div>
+				<div class="item-foot">
+					<div class="item-foot-info">
+
+						<a href="javascript:;" title="赞"><i class="icon-agree"></i>(302)</a>
+						<a href="javascript:;" title="评论"><i class="icon-coment"></i>(883)</a>
+					</div>
+					<div class="item-foot-agree">
+						302人觉得很赞
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="item-icon-dot">
+					<div class="dot-child"></div>
+				</div>
+				<div class="item-icon-arrow"></div>
+				<div class="item-head">
+					<div class="item-head-title">
+						<div class="item-head-lunar">
+						初<br>&nbsp;&nbsp;&nbsp;四
+						</div>
+						2016-11-12
+					</div>
+					<div class="item-head-content">
+						<div class="ui-icon before"></div>
+						在这春林初盛，草长莺飞的日子，QQ空间愿你关掉电脑，放下手机，与三五好友相约青山绿水中，感受春天带来的勃勃生机···<div class="ui-icon after"></div>
+					</div>
+				</div>
+				<div class="item-pic">
+					<img src="i/8绣春刀.jpg">
+				</div>
+				<div class="item-foot">
+					<div class="item-foot-info">
+
+						<a href="javascript:;" title="赞"><i class="icon-agree"></i>(596)</a>
+						<a href="javascript:;" title="评论"><i class="icon-coment"></i>(1560)</a>
+					</div>
+					<div class="item-foot-agree">
+						2w人觉得很赞
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

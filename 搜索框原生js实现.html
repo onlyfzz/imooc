@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>搜索框</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			background: #333;
+		}
+		.wrapper{
+			position: relative;
+			width: 1280px;
+			height: 690px;
+			margin: 0 auto;
+			background: url(i/river.jpg) no-repeat;
+		}
+		.search-container{
+			position: absolute;
+			top: 200px;
+			left: 200px;
+		}
+		.search-logo{
+			float: left;
+			margin: -4px 18px 0 0;
+		}
+		.search{
+			float: left;
+			width: 300px;
+			padding: 5px;
+			background: #fff;
+		}
+		.search-text{
+			float: left;
+			width:  270px;
+			height: 30px;
+			line-height: 30px;
+			border: none;
+			outline: none;
+		}
+		.search-submit{
+			float: left;
+			width: 30px;
+			height: 30px;
+			cursor: pointer;
+			background: url(i/search-button.png);
+			border: none;
+			outline: none;
+		}
+		.suggest{
+			display: none;
+			position: absolute;
+			width: 308px;
+			border: 1px solid #e5e5e5;
+			background: #fff;
+		}
+		.suggest ul{
+			list-style: none;
+		}
+		.suggest li{
+			padding: 5px;
+		}
+		.suggest li:hover{
+			text-decoration: underline;
+			background: #eee;
+		}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="search-container">
+			<img src="i/logo.png" class="search-logo">
+			<form class="search" id="search-form">
+				<input type="text" class="search-text" id="search-text">
+				<input type="button" class="search-submit" id="search-submit" value="">
+			</form>
+		</div>
+	</div>
+	<div class="suggest" id="suggest-div">
+		<ul id="search-suggest">
+		</ul>
+	</div>
+<script type="text/javascript">
+	function $(id){
+		if (document.getElementById(id)) {
+			return document.getElementById(id);
+		}
+	}
+	function addEvent(id,event,method){
+		ele=$(id)||document;
+		if (ele.addEventListener) {
+			ele.addEventListener(event,method,false);
+		}else{
+			ele.attachEvent(event,method);
+		}
+	}
+	function getOffsetLeft(ele){
+		ele=$(ele);
+		var left=ele.offsetLeft;
+		var curent=ele.offsetParent;
+		while(curent!==null){
+			left+=curent.offsetLeft;
+			curent=curent.offsetParent;
+		}
+		return left;
+	}
+	function getOffsetTop(ele){
+		ele=$(ele);
+		var top=ele.offsetTop;
+		var curent=ele.offsetParent;
+		while(curent!==null){
+			top+=curent.offsetTop;
+			curent=curent.offsetParent;
+		}
+		return top;
+	}
+	addEvent('search-text','keyup',function(){
+		var searchText=$('search-text').value;
+		if (searchText) {
+			var xhr=new XMLHttpRequest();
+			xhr.open('GET','http://api.bing.com/qsonhs.aspx?q='+searchText);
+			xhr.send();
+			xhr.onreadystatechange=function(){
+				if (xhr.readyState===4) {
+					if (xhr.status===200) {
+						var data=JSON.parse(xhr.responseText).AS.Results[0].Suggests;
+						var html='';
+						for(var i=0;i<data.length;i++){
+							html+='<li>'+data[i].Txt+'</li>';
+						}
+						$('search-suggest').innerHTML=html;
+						$('suggest-div').style.left=getOffsetLeft('search-form')+'px';
+						$('suggest-div').style.top=getOffsetTop('search-form')+$('search-form').offsetHeight+'px';
+						$('suggest-div').style.display='block';
+					}
+				}
+			};
+		}
+	});
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>不使用css3淡入淡出轮播图</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		html,body{
+			width: 100%;
+		}
+		.container{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			width: 800px;
+			height: 500px;
+			overflow: hidden;
+		}
+		.list img{
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 800px;
+			height: 500px;
+			opacity: 0;
+			z-index: 1;
+		}
+		.list img:first-child{
+			opacity: 1;
+			z-index: 2;
+		}
+		.buttons{
+			position: absolute;
+			left: 50%;
+			bottom: 20px;
+			margin-left: -90px;
+			width: 180px;
+			text-align: center;
+			cursor: pointer;
+			z-index: 2;
+		}
+		.buttons span{
+			display: inline-block;
+			width: 20px;
+			height: 20px;
+			margin-right: 5px;
+			border-radius: 50%;
+			background: #aaa;
+			border: 1px solid #fff;
+		}
+		.buttons span:last-child{
+			margin-right: 0;
+		}
+		.buttons .on{
+			background: #000;
+		}
+		.arrow{
+			display: none;
+			position: absolute;
+			top: 230px;
+			width: 40px;
+			height: 40px;
+			background: rgba(0,0,0,0.4);
+			font-size: 40px;
+			font-weight: bold;
+			text-align: center;
+			cursor: pointer;
+			color: #fff;
+			z-index: 2;
+		}
+		.container:hover .arrow{
+			display: block;
+		}
+		#pre{
+			left: 0;
+		}
+		#next{
+			right: 0;
+		}
+	</style>
+</head>
+<body>
+<div id="container" class="container">
+	<div id="list" class="list" >
+		<img src="i/8绣春刀.jpg" alt="绣春刀">
+		<img src="i/1当幸福来敲门.jpg" alt="当幸福来敲门">
+		<img src="i/2蝙蝠侠黑暗骑士.jpg" alt="蝙蝠侠黑暗骑士">
+		<img src="i/3后天.jpg" alt="后天">
+		<img src="i/7无间道.jpg" alt="无间道">
+	</div>
+	<div id="buttonGroup" class="buttons">
+			<span index="0" class="on"></span>
+			<span index="1"></span>
+			<span index="2"></span>
+			<span index="3"></span>
+			<span index="4"></span>
+	</div>
+</div>
+<script src="js/move.js"></script>
+<script type="text/javascript">
+	function $(id) {
+		return document.getElementById(id);
+	}
+	var buttonGroup=$("buttonGroup"),
+		buttons=buttonGroup.getElementsByTagName('span'),
+		list=$("list"),
+		imgs=list.getElementsByTagName('img'),
+		flag=0,
+		container=$("container"),
+		timer;
+	function render(index){
+		for(var i=0;i<imgs.length;i++){
+			imgs[i].style.opacity="0";
+			imgs[i].style.zindex="1";
+		}
+		imgs[index].style.zindex="2";
+		startMove(imgs[index],{opacity:100},600,30);
+	}
+	function bt_listen(event){
+		if (event.target&&event.target.tagName.toLowerCase()=='span') {
+			var index=event.target.getAttribute('index');
+			flag=index;
+			render(flag);
+			showButton();
+		}
+	}
+	function showButton(){
+		for(var i=0;i<buttons.length;i++){
+			buttons[i].className=buttons[i].className.replace(/\s*on/,"");
+		}
+		buttons[flag].className+=" on";
+	}
+	function play(){
+		timer=setInterval(function(){
+			if (flag==4) {
+				flag=0;
+			}else{
+				flag++;
+			}
+			render(flag);
+			showButton();
+		},3000);
+	}
+	function stop(){
+		clearInterval(timer);
+	}
+	function start(){
+		buttonGroup.addEventListener('click',bt_listen,false);
+		container.addEventListener('mouseenter',stop,false);
+		container.addEventListener('mouseleave',play,false);
+		play();
+	}	
+	start();
+</script>
+</body>
+</html>
